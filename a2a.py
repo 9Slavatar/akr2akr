@@ -1,10 +1,7 @@
 from sys import argv as args
 from os.path import exists
-import json
-
-
-def download_settings():
-    pass
+from json import load, dump, loads
+from requests import get
 
 
 def migrate(from_path: str, to_path: str, cmds: list[str]) -> None:
@@ -17,16 +14,22 @@ def migrate(from_path: str, to_path: str, cmds: list[str]) -> None:
     # Проверяем на наличие файла конфигурации
     if not exists("settings.json"):
         print("[W] Скачиваю конфигурацию по умолчанию...")
-        download_settings()
+        with open("settings.json", "w") as f:
+            f.write(
+                get(
+                    "https://raw.githubusercontent.com/9Slavatar/akr2akr/master/settings.json"
+                ).text
+            )
+            f.close()
 
-    # Получаем сведенья из джсон файлов
-    settings: dict = json.load(open("settings.json", "r"))
-    from_cfg: dict = json.load(open(from_path))
-    to_cfg: dict = json.load(open(to_path))
+    # Получаем инфу из джсон файлов
+    settings: dict = load(open("settings.json", "r"))
+    from_cfg: dict = load(open(from_path))
+    to_cfg: dict = load(open(to_path))
 
     # Создаем резервную копию конфига
     if settings["global"]["make-backup"]:
-        json.dump(to_cfg, open(to_path + "b", "w"), indent=2)
+        dump(to_cfg, open(to_path + "b", "w"), indent=2)
 
     # Определяем что нужно сделать
     for cmd in cmds:
@@ -34,7 +37,9 @@ def migrate(from_path: str, to_path: str, cmds: list[str]) -> None:
         if cmd == "binds":
             # Переносим все бинды
             for feature in from_cfg["features"]:
-                to_cfg["features"][feature]["hotkey"] = from_cfg["features"][feature]["hotkey"]
+                to_cfg["features"][feature]["hotkey"] = from_cfg["features"][feature][
+                    "hotkey"
+                ]
             print("[I] Все бинды успешно перенесены")
         elif cmd == "macros":
             # Переносим все макросы
@@ -54,23 +59,29 @@ def migrate(from_path: str, to_path: str, cmds: list[str]) -> None:
 
                 # Оставляем хоткей
                 if settings["global"]["save-binds"]:
-                    from_cfg["features"][feature]["hotkey"] = to_cfg["features"][feature]["hotkey"]
-                    
+                    from_cfg["features"][feature]["hotkey"] = to_cfg["features"][
+                        feature
+                    ]["hotkey"]
+
                 # Устанавливаем настройки
                 to_cfg["features"][feature] = from_cfg["features"][feature]
             print(f"[I] Все функции для категории {cmd} перенесены")
 
     # Сохраняем наш кфг новыми настройками
-    json.dump(to_cfg, open(to_path, "w"), indent=2)
-    
+    dump(to_cfg, open(to_path, "w"), indent=2)
+
     print(f"[I] Конфиг {to_path} сохранен")
 
 
 if __name__ == "__main__":
     if len(args) == 1:
-        migrate(input("Исходный кфг: "), input("Новый кфг: "), input("Флаги: ").split(" "))
+        migrate(
+            input("Исходный кфг: "), input("Новый кфг: "), input("Флаги: ").split(" ")
+        )
         input()
     elif len(args) < 4:
-        print("[E] Нужны аргументы: <путь/до/исходного_кфг.akr> <путь/до/нового_кфг.akr> <флаги>")
+        print(
+            "[E] Нужны аргументы: <путь/до/исходного_кфг.akr> <путь/до/нового_кфг.akr> <флаги>"
+        )
     else:
         migrate(args[1], args[2], args[3:])
