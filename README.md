@@ -53,6 +53,6 @@ a2a.exe my-configs/reallyworld.akr friend.akr visuals
 Все что нужно сделать - запустить `a2a.exe` и вводить очередно:
 В первую строку `my-configs/reallyworld.akr`, 
 
-во вторую `friend.akr` 
+Во вторую `friend.akr` 
 
-и в третью `visuals`
+В третью `visuals`

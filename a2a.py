@@ -66,7 +66,6 @@ def migrate(from_path: str, to_path: str, cmds: list[str]) -> None:
                 # Устанавливаем настройки
                 to_cfg["features"][feature] = from_cfg["features"][feature]
             print(f"[I] Все функции для категории {cmd} перенесены")
-
     # Сохраняем наш кфг новыми настройками
     dump(to_cfg, open(to_path, "w"), indent=2)
 
