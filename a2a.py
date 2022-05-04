@@ -69,6 +69,7 @@ def migrate(from_path: str, to_path: str, cmds: list[str]) -> None:
 if __name__ == "__main__":
     if len(args) == 1:
         migrate(input("Исходный кфг: "), input("Новый кфг: "), input("Флаги: ").split(" "))
+        input()
     elif len(args) < 4:
         print("[E] Нужны аргументы: <путь/до/исходного_кфг.akr> <путь/до/нового_кфг.akr> <флаги>")
     else:

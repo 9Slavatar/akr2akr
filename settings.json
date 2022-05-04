@@ -1,7 +1,8 @@
 {
     "global": {
-        "save-binds": false,
-        "make-backup": true
+        "save-binds": false, // Сохранять ваши бинды?
+        "make-backup": true // Делать резервную копию вашего кфг? (.akrb)
+        // true - да, false - нет
     },
     "features": {
         "combat": [
