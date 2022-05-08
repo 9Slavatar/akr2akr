@@ -1,6 +1,6 @@
 from sys import argv as args
 from os.path import exists
-from json import load, dump, loads
+from json import load, dump
 from requests import get
 
 
